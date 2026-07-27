@@ -1,0 +1,7 @@
+# Local test / auth artifacts — never commit to the public staging build repo
+c.txt
+h.txt
+session.json
+curl
+*.bat
+.DS_Store
