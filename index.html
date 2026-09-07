@@ -20,7 +20,11 @@
       /* Full-viewport shell. The blurred key art tells the player WHICH game is loading; the
          #0e0e12 underneath is the fallback until the JPG arrives and is what paints the letterbox
          bars, so it must stay identical to GROUND in Tools/bake_loading_bg.py.
-         `cover`, never `100% 100%`: cover crops, stretch distorts. */
+         `cover`, never `100% 100%`: cover crops, stretch distorts.
+         The image is TORN DOWN in the createUnityInstance().then() handler beside the killEl()
+         calls — search `container.style.background`. Because this element paints the letterbox
+         bars, leaving it set would keep a band of blurred art above and below the game for the
+         whole session. The two halves are forty lines and one language apart; keep them in step. */
       #unity-container {
         position: fixed; inset: 0;
         background: #0e0e12 url('TemplateData/loading-bg.jpg') center / cover no-repeat;
@@ -253,6 +257,15 @@
           killEl("#unity-progress-percent");
           killEl("#unity-loading-bar");
           // No custom loading overlay/cover div in this template — nothing else to kill.
+
+          // The backdrop is a LOADING backdrop, and it has to come down with the rest of the
+          // loading UI. #unity-container is the FULL VIEWPORT with the canvas letterboxed inside
+          // it, so its background is also what paints the LETTERBOX BARS — leave the image set and
+          // a band of blurred key art sits above and below the game for the whole session, with a
+          // visible seam at the canvas edge. Drop back to the flat ground colour, which is what the
+          // bars are meant to be. Set in the #unity-container rule above; keep the two in step.
+          var container = document.querySelector("#unity-container");
+          if (container) container.style.background = "#0e0e12";
 
           resizeCanvas();
 
